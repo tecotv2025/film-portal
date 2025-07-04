@@ -40,6 +40,7 @@ interface CrewMember {
 // Next.js App Router'da sayfa bileşenlerine gelen prop'ların doğru tipini belirtmek.
 // 'params' dinamik route segmentleri (örn. [id]) için,
 // 'searchParams' ise URL sorgu parametreleri (örn. ?query=...) içindir.
+// TypeScript'in Promise<any> hatasını almamak için bu tanımın doğru olması kritik.
 interface MovieDetailPageProps {
   params: {
     id: string; // URL'den gelecek film ID'si, dinamik route segmenti
@@ -58,7 +59,7 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
   if (!apiKey) {
     return (
       <MainLayoutWrapper isDetailPage={true}>
-        <div className="text-center text-red-500 mt-10">
+        <div className="text-center text-red-500 mt-10 text-red-500">
           API Anahtarı bulunamadı. Lütfen .env dosyanızı kontrol edin.
         </div>
       </MainLayoutWrapper>
@@ -104,7 +105,7 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
       if (trailer) {
         // YouTube embed URL'si formatına dikkat edin.
         // Güvenli https kullanmak her zaman daha iyidir.
-        // Googleusercontent URL'i yerine doğrudan YouTube embed URL'ini kullanmak genellikle daha sorunsuz olur.
+        // Doğrudan YouTube embed URL'sini kullanmak en sağlıklısıdır.
         videoKey = `https://www.youtube.com/embed/${trailer.key}`;
       }
     } else {
@@ -214,7 +215,7 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
               </div>
 
               {/* Fragman Bölümü */}
-              {videoKey && ( // videoKey artık direkt embed URL'si olduğu için youtubeEmbedUrl'ye gerek yok
+              {videoKey && (
                 <div className="mt-8">
                   <h2 className="text-2xl font-bold mb-4">Fragman</h2>
                   <div className="relative" style={{ paddingBottom: "56.25%", height: 0 }}>
@@ -261,7 +262,7 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
                 <div className="mt-8">
                   <h2 className="text-2xl font-bold mb-4">Oyuncular</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {/* İlk 10 oyuncuyu gösteriyoruz, daha fazlası için slice() kaldırılabilir veya artırılabilir */}
+                    {/* İlk 10 oyuncuyu göstermek iyi bir başlangıçtır */}
                     {cast.slice(0, 10).map((actor) => (
                       <div key={actor.id} className="text-center">
                         {actor.profile_path ? (
