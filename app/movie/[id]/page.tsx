@@ -36,15 +36,17 @@ interface CrewMember {
   profile_path: string | null;
 }
 
-// Sayfa parametrelerinin tipi
+// --- DÜZELTME: Sayfa prop'larının tipi ---
+// Next.js App Router'da sayfa bileşenlerine gelen prop'ların doğru tipini belirtmek.
+// 'params' dinamik route segmentleri (örn. [id]) için,
+// 'searchParams' ise URL sorgu parametreleri (örn. ?query=...) içindir.
 interface MovieDetailPageProps {
-  // `params` prop'u Next.js tarafından bir obje olarak sağlanır
-  // Burada `id`'nin string olacağını belirtiyoruz.
   params: {
-    id: string; // Dinamik route segment'i (örn. [id])
+    id: string; // URL'den gelecek film ID'si, dinamik route segmenti
   };
-  // Eğer searchParams kullanıyorsanız, buraya eklemeniz gerekebilir
-  // searchParams: { [key: string]: string | string[] | undefined };
+  // searchParams opsiyoneldir ve object olarak gelir.
+  // [key: string]: string | string[] | undefined tipi, tüm olası sorgu parametrelerini kapsar.
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 // --- MovieDetailPage Bileşeni ---
@@ -100,7 +102,10 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
         (vid: any) => vid.site === "YouTube" && vid.type === "Trailer"
       );
       if (trailer) {
-        videoKey = trailer.key;
+        // YouTube embed URL'si formatına dikkat edin.
+        // Güvenli https kullanmak her zaman daha iyidir.
+        // Googleusercontent URL'i yerine doğrudan YouTube embed URL'ini kullanmak genellikle daha sorunsuz olur.
+        videoKey = `https://www.youtube.com/embed/${trailer.key}`;
       }
     } else {
       console.warn(`Fragman bilgileri çekilemedi (${videoRes.status}):`, videoRes.statusText);
@@ -150,9 +155,6 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
   const backdropUrl = movie.backdrop_path
     ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
     : null; // Büyük arka plan resmi
-
-  // Fragman iframe için YouTube embed URL'si
-  const youtubeEmbedUrl = videoKey ? `https://www.youtube.com/embed/${videoKey}` : '';
 
   return (
     <MainLayoutWrapper isDetailPage={true}>
@@ -212,13 +214,13 @@ export default async function MovieDetailPage({ params }: MovieDetailPageProps) 
               </div>
 
               {/* Fragman Bölümü */}
-              {youtubeEmbedUrl && (
+              {videoKey && ( // videoKey artık direkt embed URL'si olduğu için youtubeEmbedUrl'ye gerek yok
                 <div className="mt-8">
                   <h2 className="text-2xl font-bold mb-4">Fragman</h2>
                   <div className="relative" style={{ paddingBottom: "56.25%", height: 0 }}>
                     <iframe
                       className="absolute top-0 left-0 w-full h-full rounded-lg shadow-xl"
-                      src={youtubeEmbedUrl} // Düzeltilmiş YouTube embed URL'si
+                      src={videoKey} // Doğrudan videoKey kullanılıyor
                       title={`${movie.title} Fragmanı`}
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
