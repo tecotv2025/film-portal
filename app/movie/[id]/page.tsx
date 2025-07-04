@@ -38,7 +38,13 @@ interface CrewMember {
 
 // Sayfa parametrelerinin tipi
 interface MovieDetailPageProps {
-  params: { id: string }; // URL'den gelecek film ID'si
+  // `params` prop'u Next.js tarafından bir obje olarak sağlanır
+  // Burada `id`'nin string olacağını belirtiyoruz.
+  params: {
+    id: string; // Dinamik route segment'i (örn. [id])
+  };
+  // Eğer searchParams kullanıyorsanız, buraya eklemeniz gerekebilir
+  // searchParams: { [key: string]: string | string[] | undefined };
 }
 
 // --- MovieDetailPage Bileşeni ---
