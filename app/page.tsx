@@ -1,41 +1,20 @@
-"use client";
+// app/page.tsx
+// Bu dosya bir Sunucu Bileşenidir (varsayılan olarak).
+// Client-side state yönetimi veya DOM etkileşimleri burada yapılmaz.
 
-import { useState } from "react";
-import Navbar from "../components/Navbar";
-import GenreList from "../components/GenreList";
-import MovieList from "../components/MovieList";
+import MainLayoutWrapper from "../components/MainLayoutWrapper"; // MainLayoutWrapper'ı import ediyoruz
 
-export default function Page() {
-  const [filter, setFilter] = useState("all");
-  const [page, setPage] = useState(1);
-  const [genreId, setGenreId] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");  // searchQuery eklendi
-
+/**
+ * Ana sayfa bileşeni.
+ * Tüm filtreleme, arama ve sayfalama mantığı MainLayoutWrapper içinde yönetilir.
+ * Bu sayfanın tek sorumluluğu, ana uygulamanın düzenini ve işlevselliğini sağlayan
+ * MainLayoutWrapper bileşenini render etmektir.
+ */
+export default function HomePage() {
   return (
-    <>
-      <Navbar 
-        selected={filter} 
-        onSelect={setFilter} 
-        onSearch={setSearchQuery}  // onSearch eklendi
-      />
-      <main className="max-w-7xl mx-auto px-4 py-6 flex gap-6">
-        <GenreList 
-          selectedGenreId={genreId} 
-          onSelectGenre={(id) => {
-            setGenreId(id);
-            setPage(1); // Tür değişince sayfayı 1 yap
-          }} 
-        />
-        <div className="flex-1">
-          <MovieList
-            filter={filter}
-            page={page}
-            onPageChange={setPage}
-            genreId={genreId}
-            searchQuery={searchQuery}  // searchQuery eklendi
-          />
-        </div>
-      </main>
-    </>
+    // MainLayoutWrapper, Navbar, GenreList ve MovieList'i (ana sayfa için) içerir.
+    // isDetailPage prop'u varsayılan olarak 'false' olduğu için burada belirtmeye gerek yoktur.
+    // Bu, MovieList'in render edilmesini ve URL senkronizasyonunun çalışmasını sağlar.
+    <MainLayoutWrapper />
   );
 }
