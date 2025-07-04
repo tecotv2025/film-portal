@@ -9,21 +9,30 @@ export default function Page() {
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [genreId, setGenreId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");  // searchQuery eklendi
 
   return (
     <>
-      <Navbar selected={filter} onSelect={setFilter} />
+      <Navbar 
+        selected={filter} 
+        onSelect={setFilter} 
+        onSearch={setSearchQuery}  // onSearch eklendi
+      />
       <main className="max-w-7xl mx-auto px-4 py-6 flex gap-6">
-        <GenreList selectedGenreId={genreId} onSelectGenre={(id) => {
-          setGenreId(id);
-          setPage(1); // Tür değişince sayfayı 1 yap
-        }} />
+        <GenreList 
+          selectedGenreId={genreId} 
+          onSelectGenre={(id) => {
+            setGenreId(id);
+            setPage(1); // Tür değişince sayfayı 1 yap
+          }} 
+        />
         <div className="flex-1">
           <MovieList
             filter={filter}
             page={page}
             onPageChange={setPage}
             genreId={genreId}
+            searchQuery={searchQuery}  // searchQuery eklendi
           />
         </div>
       </main>

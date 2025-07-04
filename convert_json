@@ -1,0 +1,29 @@
+import re
+import json
+
+# M3U dosyasının yolu (örneğin: indirilen dosya)
+m3u_file = "power-sinema.m3u"
+json_file = "movies.json"
+
+movies = []
+
+with open(m3u_file, "r", encoding="utf-8") as f:
+    lines = f.readlines()
+
+for i in range(len(lines)):
+    line = lines[i].strip()
+    if line.startswith("#EXTINF"):
+        title_match = re.search(r",(.+)", line)
+        title = title_match.group(1).strip() if title_match else "Bilinmeyen"
+        url = lines[i + 1].strip() if i + 1 < len(lines) else None
+        if url and url.startswith("http"):
+            movies.append({
+                "title": title,
+                "url": url
+            })
+
+# JSON dosyasına yaz
+with open(json_file, "w", encoding="utf-8") as f:
+    json.dump(movies, f, ensure_ascii=False, indent=2)
+
+print(f"{len(movies)} film başarıyla '{json_file}' dosyasına kaydedildi.")
